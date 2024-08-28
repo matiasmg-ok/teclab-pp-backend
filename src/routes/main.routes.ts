@@ -3,10 +3,9 @@ import usersRoutes from './users.routes'
 const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {  
-  return res.send('Status: OK');
+  return res.send('API - Hello world!');
 });
 
 router.use('/users', usersRoutes);
-router.use('/send-form', notificationRoutes);
 
 export default router;
