@@ -1,16 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { DefaultData } from "./DefaultData";
+import { Order } from "./Order";
 
 @Entity('users')
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class User extends DefaultData {
   @Column("text")
   name: string;
 
   @Column("text")
+  email: string;
+
+  @Column("text")
   password: string;
 
-  @Column("datetime", { default: () => "CURRENT_TIMESTAMP" })
-  createdAt: Date;
+  @OneToMany(() => Order, order => order.user)
+  orders: Order[]
 }

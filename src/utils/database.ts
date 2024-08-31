@@ -2,6 +2,10 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "../entity/User"
 import { config } from "dotenv"
+import { Order } from "../entity/Order";
+import { OrderProduct } from "../entity/OrderProduct";
+import { Product } from "../entity/Product";
+import { ProductImage } from "../entity/ProductImage";
 
 config();
 
@@ -12,7 +16,7 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "test",
-  entities: [User],
+  entities: [Order, User, OrderProduct, Product, ProductImage],
   synchronize: true,
   logging: false,
 })
