@@ -1,9 +1,11 @@
 import express from 'express'
 import morgan from 'morgan';
 import cors from 'cors';
+import path from 'path';
 
 import indexRoutes from './routes/main.routes'
-import path from 'path';
+import userRoutes from './routes/users.routes'
+import productRoutes from './routes/products.routes'
 
 const app = express();
 
@@ -17,5 +19,7 @@ app.use(cors({
 app.use('/', express.static(path.join(__dirname, '../public')));
 
 app.use(indexRoutes)
+app.use('/users', userRoutes);
+app.use('/products', productRoutes);
 
 export default app;
