@@ -36,6 +36,11 @@ export async function register(req: Request, res: Response) {
   try {
     const { name, email, password } = req.body;
 
+    const existingUser = await userRepository.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(409).json({ message: 'User already exists' });
+    }
+
     const user = new User;
     user.name = name;
     user.email = email;
@@ -45,7 +50,7 @@ export async function register(req: Request, res: Response) {
 
     const token = jwt.sign({ user: { id: insertion.id } }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
 
-    return res.status(200).json({ token });
+    return res.status(201).json({ token });
 
   } catch (error) {
     console.error(error);

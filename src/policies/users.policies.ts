@@ -28,7 +28,20 @@ export default {
 
       next();
     } catch (error) {
+      console.error(error);
       return res.status(401).json({ message: 'Unauthorized' });
     }
+  },
+  isAdmin: async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.body.user as User;
+    if(!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if(user.profile !== 'admin') {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    next();
   }
 }
