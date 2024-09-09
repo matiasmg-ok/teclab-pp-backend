@@ -5,8 +5,8 @@ const router = Router();
 
 router.post("/login", login);
 
-router.get("/am-i-logged-in", userPolicies.isLoggedIn, (req, res) => {
-  res.send("You are logged in");
+router.get("/whoami", userPolicies.isLoggedIn, (req: any, res) => {
+  res.send(req.user.body);
 });
 
 export default router;

@@ -13,6 +13,9 @@ export class User extends DefaultData {
   @Column("text")
   password: string;
 
+  @Column("varchar", { nullable: true, default: 'client' })
+  profile: 'admin' | 'client'
+
   @OneToMany(() => Order, order => order.user)
   orders: Order[]
 }

@@ -17,10 +17,12 @@ export default {
 
     try {
       const payload: JwtPayload = verify(token, process.env.JWT_SECRET || 'secret') as JwtPayload;
-      const user = await userRepository.findOne({ where: { name: payload.user.name } });
+      const user = await userRepository.findOne({ where: { name: payload.user.name } }) as any;
       if(!user) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
+
+      delete user.password;
 
       req.body.user = user;
 
