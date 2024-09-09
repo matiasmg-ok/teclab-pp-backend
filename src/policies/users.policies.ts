@@ -17,7 +17,7 @@ export default {
 
     try {
       const payload: JwtPayload = verify(token, process.env.JWT_SECRET || 'secret') as JwtPayload;
-      const user = await userRepository.findOne({ where: { name: payload.user.name } }) as any;
+      const user = await userRepository.findOne({ where: { id: payload.user.id } }) as any;
       if(!user) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
