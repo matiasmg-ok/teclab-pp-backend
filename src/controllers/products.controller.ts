@@ -18,7 +18,7 @@ export const create = async (req: Request, res: Response) => {
 
     const insertion = await productRepository.save(product);
 
-    return res.json(insertion)
+    return res.status(201).json(insertion)
 
   } catch (error) {
     console.error(error);
