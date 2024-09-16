@@ -1,16 +1,34 @@
-import { NextFunction, Request, Response } from "express";
-import IController from "../interfaces/IController";
+import { Request, Response } from "express";
 import AppDataSource from "../utils/database";
 import { Product } from "../entity/Product";
-import { Between, IsNull, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
+import { IsNull, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
+import path from 'path';
 
 const productRepository = AppDataSource.getRepository(Product);
+
+const deleteFile = async (filename: string) => {
+  try {
+    const path_ = path.join(__dirname, '../../public/img/products', filename);
+    return await new Promise((resolve, reject) => {
+      import('fs').then((fs) => {
+        fs.default.unlink(path_, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(true);
+        });
+      });
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export const create = async (req: Request, res: Response) => {
   try {
     const { name, description, group, price } = req.body as Product;
 
-    if(!req.file) {
+    if (!req.file) {
       return res.status(400).json({ message: 'Image is required' });
     }
 
@@ -47,6 +65,11 @@ export const update = async (req: Request, res: Response) => {
     product.description = description;
     product.group = group;
     product.price = price;
+
+    if (req.file && product.imageUrl) {
+      await deleteFile(product.imageUrl.split('/img/products/')[1]);
+      product.imageUrl = `/img/products/${req.file.filename}`;
+    }
 
     await productRepository.save(product);
 
