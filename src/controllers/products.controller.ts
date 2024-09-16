@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import IController from "../interfaces/IController";
 import AppDataSource from "../utils/database";
 import { Product } from "../entity/Product";
@@ -10,11 +10,16 @@ export const create = async (req: Request, res: Response) => {
   try {
     const { name, description, group, price } = req.body as Product;
 
+    if(!req.file) {
+      return res.status(400).json({ message: 'Image is required' });
+    }
+
     const product = new Product();
     product.name = name;
     product.description = description;
     product.group = group;
     product.price = price;
+    product.imageUrl = `/img/products/${req.file.filename}`;
 
     const insertion = await productRepository.save(product);
 
