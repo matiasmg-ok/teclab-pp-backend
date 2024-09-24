@@ -13,7 +13,7 @@ export class Product extends DefaultData {
   @Column("varchar", { length: 100 })
   group: string;
 
-  @Column('decimal', { precision: 5, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
   @Column("varchar", { length: 255, nullable: true })
