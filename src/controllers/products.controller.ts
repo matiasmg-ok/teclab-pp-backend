@@ -121,16 +121,23 @@ export const getOne = async (req: Request, res: Response) => {
 
 export const getAll = async (req: Request, res: Response) => {
   try {
-    const { search, group, minPrice, maxPrice } = req.query;
+    const { name, search, group, minPrice, maxPrice } = req.query;
 
     const products = await productRepository.find({
-      where: {
-        deletedAt: IsNull(),
-        ...(search && { name: Like(`%${search}%`) }),
-        ...(group && { group: Like(`%${group}%`) }),
-        ...(minPrice && { price: MoreThanOrEqual(Number(minPrice)) }),
-        ...(maxPrice && { price: LessThanOrEqual(Number(maxPrice)) })
-      }
+      where: [
+        {
+          deletedAt: IsNull(),
+          ...(name && { name: Like(`%${name}%`) }),
+          ...(search && { name: Like(`%${search}%`) }),
+          ...(group && { group: Like(`%${group}%`) }),
+          ...(minPrice && { price: MoreThanOrEqual(Number(minPrice)) }),
+          ...(maxPrice && { price: LessThanOrEqual(Number(maxPrice)) })
+        },
+        {
+          deletedAt: IsNull(),
+          ...(search && { group: Like(`%${search}%`) })
+        }
+      ]
     });
 
     return res.json(products);
