@@ -7,16 +7,20 @@ const advertisementRepository = AppDataSource.getRepository(Advertisement);
 
 export async function create(req: Request, res: Response) {
   try {
-    const { title, redirectUrl, imageUrl } = req.body as Advertisement;
+    const { title, redirectUrl } = req.body as Advertisement;
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Image is required' });
+    }
 
     const advertisement = new Advertisement();
     advertisement.title = title;
     advertisement.redirectUrl = redirectUrl;
-    advertisement.imageUrl = imageUrl;
+    advertisement.imageUrl = `/img/advertisements/${req.file.filename}`;
 
     const insertion = await advertisementRepository.save(advertisement);
 
-    return res.json(insertion);
+    return res.status(201).json(insertion);
 
   } catch (error) {
     console.error(error);
@@ -44,11 +48,8 @@ export async function getOne(req: Request, res: Response) {
 
 export async function getAll(req: Request, res: Response) {
   try {
-    const { search } = req.query;
-
     const advertisements = await advertisementRepository.find({
       where: {
-        title: Like(`%${search}%`),
         deletedAt: IsNull()
       }
     });

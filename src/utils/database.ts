@@ -6,6 +6,7 @@ import { Order } from "../entity/Order";
 import { OrderProduct } from "../entity/OrderProduct";
 import { Product } from "../entity/Product";
 import { ProductImage } from "../entity/ProductImage";
+import { Advertisement } from "../entity/Advertisement";
 
 config();
 
@@ -16,7 +17,7 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "test",
-  entities: [Order, User, OrderProduct, Product, ProductImage],
+  entities: [Order, User, OrderProduct, Product, ProductImage, Advertisement],
   synchronize: true,
   logging: false,
 })
