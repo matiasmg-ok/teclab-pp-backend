@@ -9,11 +9,17 @@ export class Order extends DefaultData {
   @ManyToOne(() => User, (user) => user.orders)
   user: User;
 
-  @Column("varchar", { length: 100 })
+  @Column("varchar", { length: 100, default: 'payment-pending' })
   status: 'payment-pending' | 'payment-completed' | 'in-progress' | 'shipping' | 'finished' | 'cancelled';
 
   @Column("text")
   shippingAddress: string;
+
+  @Column("text")
+  trackingCode: string;
+
+  @Column("text")
+  additionalNotes: string;
 
   @Column("varchar", { length: 150 })
   city: string;
