@@ -88,7 +88,13 @@ export async function getAll(req: Request, res: Response) {
           deletedAt: IsNull(),
           ...(search && { name: Like(`%${search}%`) })
         }
-      ]
+      ],
+      relations: {
+        user: true,
+        products: {
+          product: true
+        }
+      }
     });
 
     return res.json(orders);
@@ -152,6 +158,34 @@ export async function createOrder(req: Request, res: Response) {
     }
 
     return res.status(201).json(insertion);
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(error);
+  }
+}
+
+export async function updateOrder(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const order = await orderRepository.findOne({
+      where: {
+        id: Number(id),
+        deletedAt: IsNull()
+      }
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    order.status = status;
+
+    await orderRepository.save(order);
+
+    return res.json(order);
 
   } catch (error) {
     console.error(error);

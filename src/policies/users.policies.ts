@@ -9,7 +9,6 @@ const userRepository = AppDataSource.getRepository(User);
 
 export default {
   isLoggedIn: async (req: Request, res: Response, next: NextFunction) => {
-    // Bearer token
     const token = req.headers.authorization?.split(' ')[1];
     if(!token) {
       return res.status(401).json({ message: 'Unauthorized' });
@@ -23,7 +22,6 @@ export default {
       }
 
       delete user.password;
-
       req.body.user = user;
 
       next();
