@@ -7,6 +7,7 @@ import indexRoutes from './routes/main.routes'
 import userRoutes from './routes/users.routes'
 import productRoutes from './routes/products.routes'
 import advertisementRoutes from './routes/advertisements.routes'
+import orderRoutes from './routes/orders.routes'
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use(indexRoutes)
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/advertisements', advertisementRoutes);
+app.use('/orders', orderRoutes)
 
 export default app;
