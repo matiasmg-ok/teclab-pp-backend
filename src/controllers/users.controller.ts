@@ -12,7 +12,7 @@ const userRepository = AppDataSource.getRepository(User);
 export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
-    let user = await userRepository.findOne({ where: { email } })
+    let user = await userRepository.findOne({ where: { email, deletedAt: IsNull() } })
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
