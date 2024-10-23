@@ -4,6 +4,7 @@ import * as jwt from "jsonwebtoken";
 import { comparePassword, hashPassword } from "../utils/passwordManager";
 import { config } from "dotenv";
 import AppDataSource from "../utils/database";
+import { IsNull } from "typeorm";
 config();
 
 const userRepository = AppDataSource.getRepository(User);
@@ -55,5 +56,39 @@ export async function register(req: Request, res: Response) {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });    
+  }
+}
+
+export async function getAll(req: Request, res: Response) {
+  try {
+    const users = await userRepository.find({ where: { deletedAt: IsNull() }, order: {
+      profile: 'ASC'
+    } });
+    return res.json(users);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(error);
+  }
+}
+
+export async function delete_(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    const user = await userRepository.findOne({ where: { id: Number(id) } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.deletedAt = new Date();
+
+    await userRepository.save(user);
+
+    return res.json(user);
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(error);
   }
 }
