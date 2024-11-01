@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import AppDataSource from "../utils/database";
 import { Product } from "../entity/Product";
-import { IsNull, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
+import { Between, IsNull, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
 import path from 'path';
 
 const productRepository = AppDataSource.getRepository(Product);
@@ -127,15 +127,17 @@ export const getAll = async (req: Request, res: Response) => {
       where: [
         {
           deletedAt: IsNull(),
-          ...(name && { name: Like(`%${name}%`) }),
           ...(search && { name: Like(`%${search}%`) }),
-          ...(group && { group: Like(`%${group}%`) }),
-          ...(minPrice && { price: MoreThanOrEqual(Number(minPrice)) }),
-          ...(maxPrice && { price: LessThanOrEqual(Number(maxPrice)) })
+          ...(minPrice && !maxPrice && { price: MoreThanOrEqual(Number(minPrice)) }),
+          ...(maxPrice && !minPrice && { price: LessThanOrEqual(Number(maxPrice)) }),
+          ...(minPrice && maxPrice && { price: Between(Number(minPrice), Number(maxPrice)) })
         },
         {
           deletedAt: IsNull(),
-          ...(search && { group: Like(`%${search}%`) })
+          ...(search && { group: Like(`%${search}%`) }),
+          ...(minPrice && !maxPrice && { price: MoreThanOrEqual(Number(minPrice)) }),
+          ...(maxPrice && !minPrice && { price: LessThanOrEqual(Number(maxPrice)) }),
+          ...(minPrice && maxPrice && { price: Between(Number(minPrice), Number(maxPrice)) })
         }
       ]
     });
