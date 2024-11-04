@@ -9,7 +9,7 @@ export class OrderProduct extends DefaultData {
   @JoinColumn()
   order: Order;
 
-  @OneToOne(() => Product, { nullable: false })
+  @ManyToOne(() => Product, { nullable: false })
   @JoinColumn()
   product: Product;
 }

@@ -62,14 +62,16 @@ export async function getMyOrders(req: Request, res: Response) {
 
 export async function getAll(req: Request, res: Response) {
   try {
-    const { name, search, minPrice, maxPrice, dateRange, date, userEmail }: {
+    const { name, search, minPrice, maxPrice, dateRange, date, userEmail, currency, status }: {
       name?: string,
       search?: string,
       minPrice?: string,
       maxPrice?: string,
       dateRange?: { startAt: Date, endAt: Date },
       date?: Date,
-      userEmail?: string
+      userEmail?: string,
+      status?: 'payment-pending' | 'payment-completed' | 'in-progress' | 'shipping' | 'finished' | 'cancelled' | null,
+      currency?: 'usd' | 'ars' | null
     } = req.query;
 
     const orders = await orderRepository.find({
@@ -80,13 +82,11 @@ export async function getAll(req: Request, res: Response) {
           ...(search && { name: Like(`%${search}%`) }),
           ...(minPrice && { price: MoreThanOrEqual(Number(minPrice)) }),
           ...(maxPrice && { price: LessThanOrEqual(Number(maxPrice)) }),
+          ...(currency && { currency }),
+          ...(status && { status }),
           ...(dateRange && { createdAt: Between(dateRange.startAt, dateRange.endAt) }),
           ...(date && { createdAt: date }),
           ...(userEmail && { user: { email: userEmail } })
-        },
-        {
-          deletedAt: IsNull(),
-          ...(search && { name: Like(`%${search}%`) })
         }
       ],
       relations: {
